@@ -2,6 +2,7 @@ package com.mymovies.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class DiscoverService implements IDiscoverService {
 
-	@Value("${resource.api.url}")
+	@Value("${resource.api.url.base}")
 	private String BASE_URL;
 	
 	@Value("${resource.api.url.image}")
@@ -23,18 +24,19 @@ public class DiscoverService implements IDiscoverService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DiscoverService.class);
 	
-	private RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private RestTemplate restTemplate;
 	
-	public String getAPI_Discover() {
+	public String getAPI_Discover(String page_number) {
 
 		String discover = null;
 
-		String url = BASE_URL+API_KEY+Language+"&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&year=2019";
-
+		String url = BASE_URL+API_KEY+Language+"&sort_by=popularity.desc&include_adult=false&include_video=false&year=2019&page=";
+				
 		try {
-			discover = restTemplate.getForObject(url, String.class);
+			discover = restTemplate.getForObject(url+page_number, String.class);
 		} catch (Exception e) {
-			LOGGER.error("Unexpected Error: getAPI_Discover: " + e);
+			LOGGER.error("Unexpected Error From Service: getAPI_Discover: " + e);
 		}
 
 		return discover;

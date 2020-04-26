@@ -6,11 +6,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/discover")
 public class DiscoverController implements IDiscoverController {
 	
 	@Autowired
@@ -20,18 +22,18 @@ public class DiscoverController implements IDiscoverController {
 	
 	@Override
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@RequestMapping(value = "/discover", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{page_number}", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public String getAPI_Discover() {
+	public String getAPI_Discover(@PathVariable String page_number) {
 
-		LOGGER.info("@Get Discover");
+		LOGGER.info("@Get Discover, page Number: " + page_number);
 
 		String listOfMovies = null;
 
 		try {
-			listOfMovies = discoverService.getAPI_Discover();
+			listOfMovies = discoverService.getAPI_Discover(page_number);
 		} catch (Exception e) {
-			LOGGER.error("Unexpected Error: getAPI_Discover: " + e);
+			LOGGER.error("Unexpected Error From Controller: getAPI_Discover: " + e);
 		}
 
 		return listOfMovies;
